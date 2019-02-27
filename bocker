@@ -24,14 +24,14 @@ function bocker_pull() { #HELP Pull an image from Docker Hub:\nBOCKER pull <name
 	tmp_uuid="$(uuidgen)" && mkdir /tmp/"$tmp_uuid"
 	download-frozen-image-v2 /tmp/"$tmp_uuid" "$1:$2" > /dev/null
 	rm -rf /tmp/"$tmp_uuid"/repositories
-	for tar in "$(jq '.[].Layers[]' --raw-output < /tmp/$tmp_uuid/manifest.json)"; do
-		tar xf /tmp/"$tmp_uuid"/$tar -C /tmp/"$tmp_uuid" && rm -rf /tmp/"$tmp_uuid"/$tar
+	for tar in $(jq '.[].Layers[]' --raw-output < /tmp/$tmp_uuid/manifest.json); do
+		tar xf /tmp/$tmp_uuid/$tar -C /tmp/$tmp_uuid && rm -rf /tmp/$tmp_uuid/$tar
 	done
-	for config in "$(jq '.[].Config' --raw-output < /tmp/$tmp_uuid/manifest.json)"; do
-		rm -f /tmp/"$tmp_uuid"/$config
+	for config in $(jq '.[].Config' --raw-output < /tmp/$tmp_uuid/manifest.json); do
+		rm -f /tmp/$tmp_uuid/$config
 	done
-	echo "$1:$2" > /tmp/"$tmp_uuid"/img.source
-	bocker_init /tmp/"$tmp_uuid" && rm -rf /tmp/"$tmp_uuid"
+	echo "$1:$2" > /tmp/$tmp_uuid/img.source
+	bocker_init /tmp/$tmp_uuid && rm -rf /tmp/$tmp_uuid
 }
 
 function bocker_rm() { #HELP Delete an image or container:\nBOCKER rm <image_id or container_id>
